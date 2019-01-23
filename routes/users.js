@@ -1,9 +1,19 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express')
+const router = express.Router()
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+// GET one user
+router.get('/:id', (req, res, next) => {
+  res.send('GET a user')
+})
 
-module.exports = router;
+// POST a new user
+router.post('/', (req, res, next) => {
+  res.send('POST a user')
+})
+
+// PATCH a user
+router.patch('/:id', (req, res, next) => {
+  res.send('PATCH a user')
+})
+
+module.exports = router
