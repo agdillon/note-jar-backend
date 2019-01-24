@@ -4,12 +4,80 @@ const knex = require('../knex')
 
 // GET one user
 router.get('/:id', (req, res, next) => {
-  res.send('GET a user')
+  knex('users')
+    .select('id', 'email', 'phone', 'code', 'daily_method', 'daily_time')
+    .where('id', req.params.id)
+    .then(user => {
+      res.json(user)
+    })
+    .catch(err => {
+      next(err)
+    })
 })
 
 // POST a new user
 router.post('/', (req, res, next) => {
-  res.send('POST a user')
+  console.log(req.body)
+  let {
+    email,
+    password,
+    phone,
+    daily_method,
+    daily_time
+  } = req.body
+
+  // hash pw - TODO
+  const hashed_password = 'password'
+
+  // remove anything that's not a digit from phone number and validate length
+  phone = phone.replace(/\D/, '')
+  if (phone.length !== 10) phone = null
+
+  // validate email
+  if (!email.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+    // next(error), email is invalid and can't be null
+  }
+
+  // validate daily_method
+  const methods = ['email', 'SMS', 'push']
+  if (!methods.includes(req.body.daily_method)) {
+    daily_method = null
+  }
+
+  // validate daily_time - TODO
+
+  // generate friend code - TODO
+  const code = phone.slice(0, 7)
+
+  const newUser = {
+    email,
+    hashed_password,
+    phone,
+    code,
+    daily_method,
+    daily_time
+  }
+
+  knex('users')
+    .where('email', newUser.email)
+    .then(user => {
+      if (user) {
+        // next(error), email already exists in db
+      }
+    })
+    .catch(err => {
+      next(err)
+    })
+
+  knex('users')
+    .insert(newUser)
+    .returning(['id', 'email', 'phone', 'code', 'daily_method', 'daily_time'])
+    .then(user => {
+      res.json(user)
+    })
+    .catch(err => {
+      next(err)
+    })
 })
 
 // PATCH a user

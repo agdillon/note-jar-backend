@@ -8,6 +8,8 @@ exports.up = (knex, Promise) => {
     table.string('daily_method')
     table.integer('daily_time')
     table.timestamps(true, true)
+
+    table.unique('email')
   })
 };
 

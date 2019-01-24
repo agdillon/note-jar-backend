@@ -8,6 +8,7 @@ const usersRouter = require('./routes/users')
 const notesRouter = require('./routes/notes')
 
 const app = express()
+app.disable('x-powered-by')
 
 app.use(logger('dev'))
 app.use(express.json())
