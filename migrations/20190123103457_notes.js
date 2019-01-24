@@ -5,7 +5,6 @@ exports.up = (knex, Promise) => {
     table.string('author')
     table.text('content').notNullable()
     table.string('type').notNullable().defaultTo('text')
-
     table.timestamps(true, true)
 
     table.foreign('user_id').references('id').inTable('users')
