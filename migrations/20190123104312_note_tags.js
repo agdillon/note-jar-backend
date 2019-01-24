@@ -5,7 +5,7 @@ exports.up = (knex, Promise) => {
     table.integer('tag_id')
     table.timestamps(true, true)
 
-    table.foreign('note_id').references('id').inTable('notes')
+    table.foreign('note_id').references('id').inTable('notes').onDelete('CASCADE')
     table.foreign('tag_id').references('id').inTable('tags')
   })
 };

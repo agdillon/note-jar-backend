@@ -10,7 +10,11 @@ router.get('/:id', (req, res, next) => {
     .select(['author', 'content', 'notes.created_at', 'note_id', 'type', 'user_id', knex.raw('ARRAY_AGG(tag_name) as tag_name')])
     .where('note_id', req.params.id)
     .groupBy('author', 'content', 'notes.created_at', 'note_id', 'type', 'user_id')
+    .first()
     .then(note => {
+      if (!note) {
+        next({ status: 404, message: 'Note not found' })
+      }
       res.json(note)
     })
     .catch(err => {
@@ -30,7 +34,15 @@ router.patch('/:id', (req, res, next) => {
 
 // DELETE a note
 router.delete('/:id', (req, res, next) => {
-  res.send('DELETE a note')
+  knex('notes')
+    .delete()
+    .where('id', req.params.id)
+    .then(() => {
+      res.status(204).send()
+    })
+    .catch(err => {
+      next(err)
+    })
 })
 
 module.exports = router

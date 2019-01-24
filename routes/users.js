@@ -32,21 +32,25 @@ router.post('/', (req, res, next) => {
   // hash pw - TODO
   const hashed_password = 'password'
 
-  // remove anything that's not a digit from phone number and validate length
-  phone = phone.replace(/\D/, '')
-  if (phone.length !== 10) {
-    next({ status: 400, message: 'Invalid phone number' })
+  if (phone) {
+    // remove anything that's not a digit from phone number and validate length
+    phone = phone.replace(/\D/, '')
+    if (phone.length !== 10) {
+      return next({ status: 400, message: 'Invalid phone number' })
+    }
   }
 
   // validate email
   if (!email.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
-    next({ status: 400, message: 'Invalid email' })
+    return next({ status: 400, message: 'Invalid email' })
   }
 
-  // validate daily_method
-  const methods = ['email', 'SMS', 'push']
-  if (!methods.includes(req.body.daily_method)) {
-    next({ status: 400, message: 'Invalid daily method (must be email, SMS, or push)' })
+  if (daily_method) {
+    // validate daily_method
+    const methods = ['email', 'SMS', 'push']
+    if (!methods.includes(req.body.daily_method)) {
+      return next({ status: 400, message: 'Invalid daily method (must be email, SMS, or push)' })
+    }
   }
 
   // validate daily_time - TODO
@@ -68,18 +72,18 @@ router.post('/', (req, res, next) => {
     .first()
     .then(user => {
       if (user) {
-        next({ status: 400, message: 'Duplicate email' })
+        return next({ status: 400, message: 'Duplicate email' })
       }
-    })
-    .catch(err => {
-      next(err)
-    })
 
-  knex('users')
-    .insert(newUser)
-    .returning(['id', 'email', 'phone', 'code', 'daily_method', 'daily_time'])
-    .then(user => {
-      res.json(user)
+      knex('users')
+        .insert(newUser)
+        .returning(['id', 'email', 'phone', 'code', 'daily_method', 'daily_time'])
+        .then(user => {
+          res.json(user)
+        })
+        .catch(err => {
+          next(err)
+        })
     })
     .catch(err => {
       next(err)
@@ -88,7 +92,62 @@ router.post('/', (req, res, next) => {
 
 // PATCH a user
 router.patch('/:id', (req, res, next) => {
-  res.send('PATCH a user')
+  let {
+    email,
+    password,
+    phone,
+    daily_method,
+    daily_time
+  } = req.body
+
+  const updateUser = {}
+
+  if (password) {
+    // hash pw - TODO
+    const hashed_password = 'password'
+    updateUser.hashed_password = hashed_password
+  }
+
+  if (phone) {
+    // remove anything that's not a digit from phone number and validate length
+    phone = phone.replace(/\D/, '')
+    if (phone.length !== 10) {
+      next({ status: 400, message: 'Invalid phone number' })
+    }
+    updateUser.phone = phone
+  }
+
+  if (email) {
+    // validate email
+    if (!email.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+      next({ status: 400, message: 'Invalid email' })
+    }
+    updateUser.email = email
+  }
+
+  if (daily_method) {
+    // validate daily_method
+    const methods = ['email', 'SMS', 'push']
+    if (!methods.includes(req.body.daily_method)) {
+      next({ status: 400, message: 'Invalid daily method (must be email, SMS, or push)' })
+    }
+    updateUser.daily_method = daily_method
+  }
+
+  if (daily_time) {
+    // validate daily_time - TODO
+    updateUser.daily_time = daily_time
+  }
+
+  knex('users')
+    .insert(updateUser)
+    .returning(['id', 'email', 'phone', 'code', 'daily_method', 'daily_time'])
+    .then(user => {
+      res.json(user)
+    })
+    .catch(err => {
+      next(err)
+    })
 })
 
 // GET all notes for user
