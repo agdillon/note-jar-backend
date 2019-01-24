@@ -20,4 +20,8 @@ app.use('/', indexRouter)
 app.use('/users', usersRouter)
 app.use('/notes', notesRouter)
 
+app.use((error, req, res, next) => {
+  res.status(error.status).json({ message: error.message })
+})
+
 module.exports = app

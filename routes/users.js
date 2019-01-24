@@ -7,7 +7,11 @@ router.get('/:id', (req, res, next) => {
   knex('users')
     .select('id', 'email', 'phone', 'code', 'daily_method', 'daily_time')
     .where('id', req.params.id)
+    .first()
     .then(user => {
+      if (!user) {
+        next({ status: 404, message: 'User not found' })
+      }
       res.json(user)
     })
     .catch(err => {
@@ -17,7 +21,6 @@ router.get('/:id', (req, res, next) => {
 
 // POST a new user
 router.post('/', (req, res, next) => {
-  console.log(req.body)
   let {
     email,
     password,
@@ -31,17 +34,19 @@ router.post('/', (req, res, next) => {
 
   // remove anything that's not a digit from phone number and validate length
   phone = phone.replace(/\D/, '')
-  if (phone.length !== 10) phone = null
+  if (phone.length !== 10) {
+    next({ status: 400, message: 'Invalid phone number' })
+  }
 
   // validate email
   if (!email.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
-    // next(error), email is invalid and can't be null
+    next({ status: 400, message: 'Invalid email' })
   }
 
   // validate daily_method
   const methods = ['email', 'SMS', 'push']
   if (!methods.includes(req.body.daily_method)) {
-    daily_method = null
+    next({ status: 400, message: 'Invalid daily method (must be email, SMS, or push)' })
   }
 
   // validate daily_time - TODO
@@ -60,9 +65,10 @@ router.post('/', (req, res, next) => {
 
   knex('users')
     .where('email', newUser.email)
+    .first()
     .then(user => {
       if (user) {
-        // next(error), email already exists in db
+        next({ status: 400, message: 'Duplicate email' })
       }
     })
     .catch(err => {
