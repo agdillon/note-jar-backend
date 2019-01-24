@@ -4,12 +4,12 @@ exports.seed = (knex, Promise) => {
     .then(() => {
       // Inserts seed entries
       return knex('tags').insert([
-        {id: 1, name: 'compliment'},
-        {id: 2, name: 'encouragement'},
-        {id: 3, name: 'gratitude'},
-        {id: 4, name: 'action'},
-        {id: 5, name: 'memory'},
-        {id: 6, name: 'humor'}
+        {id: 1, tag_name: 'compliment'},
+        {id: 2, tag_name: 'encouragement'},
+        {id: 3, tag_name: 'gratitude'},
+        {id: 4, tag_name: 'action'},
+        {id: 5, tag_name: 'memory'},
+        {id: 6, tag_name: 'humor'}
       ])
         .then(() => {
           // Moves id column (PK) auto-incrementer to correct value after inserts
