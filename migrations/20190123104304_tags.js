@@ -4,8 +4,8 @@ exports.up = (knex, Promise) => {
     table.string('tag_name').notNullable()
     table.timestamps(true, true)
   })
-};
+}
 
 exports.down = (knex, Promise) => {
   return knex.schema.dropTableIfExists('tags')
-};
+}

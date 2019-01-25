@@ -48,7 +48,7 @@ router.post('/', (req, res, next) => {
   if (daily_method) {
     // validate daily_method
     const methods = ['email', 'SMS', 'push']
-    if (!methods.includes(req.body.daily_method)) {
+    if (!methods.includes(daily_method)) {
       return next({ status: 400, message: 'Invalid daily method (must be email, SMS, or push)' })
     }
   }

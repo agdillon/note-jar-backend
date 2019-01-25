@@ -8,8 +8,8 @@ exports.up = (knex, Promise) => {
     table.foreign('note_id').references('id').inTable('notes').onDelete('CASCADE')
     table.foreign('tag_id').references('id').inTable('tags')
   })
-};
+}
 
 exports.down = (knex, Promise) => {
   return knex.schema.dropTableIfExists('note_tags')
-};
+}

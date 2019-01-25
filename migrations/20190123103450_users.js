@@ -10,6 +10,7 @@ exports.up = (knex, Promise) => {
     table.timestamps(true, true)
 
     table.unique('email')
+    table.unique('code')
   })
 };
 
