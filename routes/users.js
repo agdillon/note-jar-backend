@@ -29,12 +29,12 @@ router.post('/', (req, res, next) => {
     daily_time
   } = req.body
 
-  // hash pw - TODO
+  // password validations and hash pw - TODO
   const hashed_password = 'password'
 
   if (phone) {
     // remove anything that's not a digit from phone number and validate length
-    phone = phone.replace(/\D/, '')
+    phone = phone.replace(/\D/g, '')
     if (phone.length !== 10) {
       return next({ status: 400, message: 'Invalid phone number' })
     }
@@ -79,7 +79,7 @@ router.post('/', (req, res, next) => {
         .insert(newUser)
         .returning(['id', 'email', 'phone', 'code', 'daily_method', 'daily_time'])
         .then(user => {
-          res.json(user)
+          res.json(user[0])
         })
         .catch(err => {
           next(err)
@@ -110,7 +110,7 @@ router.patch('/:id', (req, res, next) => {
 
   if (phone) {
     // remove anything that's not a digit from phone number and validate length
-    phone = phone.replace(/\D/, '')
+    phone = phone.replace(/\D/g, '')
     if (phone.length !== 10) {
       next({ status: 400, message: 'Invalid phone number' })
     }
@@ -140,10 +140,11 @@ router.patch('/:id', (req, res, next) => {
   }
 
   knex('users')
-    .insert(updateUser)
+    .update(updateUser)
+    .where('id', req.params.id)
     .returning(['id', 'email', 'phone', 'code', 'daily_method', 'daily_time'])
     .then(user => {
-      res.json(user)
+      res.json(user[0])
     })
     .catch(err => {
       next(err)

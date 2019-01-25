@@ -21,7 +21,9 @@ app.use('/users', usersRouter)
 app.use('/notes', notesRouter)
 
 app.use((error, req, res, next) => {
-  res.status(error.status).json({ message: error.message })
+  const status = error.status || 500
+  const message = error.message || 'Internal server error'
+  res.status(status).json({ message })
 })
 
 module.exports = app

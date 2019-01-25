@@ -2,41 +2,6 @@ const express = require('express')
 const router = express.Router()
 const knex = require('../knex')
 
-function insertNoteinDB(noteData, tagsData) {
-  knex('notes')
-    .insert(noteData)
-    .returning(['id', 'user_id', 'author', 'content', 'type', 'created_at'])
-    .then(note => {
-      // get all tag names with their ids from db
-      knex('tags')
-        .then(allTags => {
-          // loop over tags you want to insert
-          tagsData.forEach((tag, i) => {
-            // get id for the tag
-            const tag_id = allTags.find(el => el.tag_name === tag).id
-            // insert association in join table
-            knex('note_tags')
-              .insert({ note_id: note.id, tag_id })
-              .then(() => {
-                // finally return your response, only if you're at the end of the array
-                if (i === tagsData.length - 1) {
-                  res.json(note)
-                }
-              })
-              .catch(err => {
-                next(err)
-              })
-          })
-        })
-        .catch(err => {
-          next(err)
-        })
-    })
-    .catch(err => {
-      next(err)
-    })
-}
-
 // GET one note
 router.get('/:id', (req, res, next) => {
   knex('notes')
@@ -59,6 +24,41 @@ router.get('/:id', (req, res, next) => {
 
 // POST a new note
 router.post('/', (req, res, next) => {
+  function insertNoteinDB(noteData, tagsData) {
+    knex('notes')
+      .insert(noteData)
+      .returning(['id', 'user_id', 'author', 'content', 'type', 'created_at'])
+      .then(note => {
+        // get all tag names with their ids from db
+        knex('tags')
+          .then(allTags => {
+            // loop over tags you want to insert
+            tagsData.forEach((tag, i) => {
+              // get id for the tag
+              const tag_id = allTags.find(el => el.tag_name === tag).id
+              // insert association in join table
+              knex('note_tags')
+                .insert({ note_id: note[0].id, tag_id })
+                .then(() => {
+                  // finally return your response, only if you're at the end of the array
+                  if (i === tagsData.length - 1) {
+                    res.json(note[0])
+                  }
+                })
+                .catch(err => {
+                  next(err)
+                })
+            })
+          })
+          .catch(err => {
+            next(err)
+          })
+      })
+      .catch(err => {
+        next(err)
+      })
+  }
+
   let {
     user_id,
     code,
