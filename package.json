@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "knex": "knex",
+    "heroku-postbuild": "knex migrate:rollback; knex migrate:latest; knex seed:run;"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
@@ -12,5 +14,8 @@
     "knex": "^0.16.3",
     "morgan": "~1.9.0",
     "pg": "^7.8.0"
+  },
+  "engines": {
+    "node": "v11.7.0"
   }
 }
