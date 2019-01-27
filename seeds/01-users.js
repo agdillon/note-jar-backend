@@ -4,8 +4,8 @@ exports.seed = (knex, Promise) => {
     .then(() => {
       // Inserts seed entries
       return knex('users').insert([
-        {id: 1, email: 'galaxiaad@gmail.com', hashed_password: 'password', code: 'ABCDEFG', daily_method: 'push'},
-        {id: 2, email: 'agdillon@gmail.com', hashed_password: 'password', code: 'BCDEFGH'}
+        {id: 1, email: 'alice@email.com', hashed_password: 'password', code: 'ABCDEFG', daily_method: 'push'},
+        {id: 2, email: 'bob@email.com', hashed_password: 'password', code: 'BCDEFGH'}
       ])
         .then(() => {
           // Moves id column (PK) auto-incrementer to correct value after inserts
