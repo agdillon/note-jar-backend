@@ -94,6 +94,10 @@ router.post('/login', (req, res, next) => {
     .where('email', email)
     .first()
     .then(user => {
+      if (!user) {
+        return next({ status: 401, message: 'Incorrect email or password' })
+      }
+
       // validate password and send 401 if invalid - TODO
       bcrypt.compare(password, user.hashed_password, (err, match) => {
         if (err) {
@@ -108,7 +112,7 @@ router.post('/login', (req, res, next) => {
           })
         }
         else {
-          return next({ status: 401, message: 'Incorrect password' })
+          return next({ status: 401, message: 'Incorrect email or password' })
         }
       })
     })
