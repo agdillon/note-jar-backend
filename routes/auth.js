@@ -16,7 +16,7 @@ router.post('/register', (req, res, next) => {
   } = req.body
 
   // password validations - TODO
-  bcrypt.hash(password, saltRounds, (err, hash) => {
+  bcrypt.hash(password, saltRounds, (err, hashed_password) => {
     if (err) {
       return next(err)
     }
@@ -67,11 +67,11 @@ router.post('/register', (req, res, next) => {
           .insert(newUser)
           .returning(['id', 'email', 'phone', 'code', 'daily_method', 'daily_time'])
           .then(user => {
-            jwt.sign({ email }, process.env.JWT_SECRET, (jwtErr, signedJwt) => {
+            jwt.sign({ user_id: user.id }, process.env.JWT_SECRET, (jwtErr, signedJwt) => {
               if (jwtErr) {
                 return next(jwtErr)
               }
-              res.json(signedJwt)
+              res.json({ signedJwt })
             })
           })
           .catch(err => {
@@ -98,11 +98,11 @@ router.post('/login', (req, res, next) => {
           return next(err)
         }
         else if (match) {
-          jwt.sign({ email }, process.env.JWT_SECRET, (jwtErr, signedJwt) => {
+          jwt.sign({ user_id: user.id }, process.env.JWT_SECRET, (jwtErr, signedJwt) => {
             if (jwtErr) {
               return next(jwtErr)
             }
-            res.json(signedJwt)
+            res.json({ signedJwt })
           })
         }
         else {

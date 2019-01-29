@@ -2,8 +2,13 @@ const express = require('express')
 const router = express.Router()
 const knex = require('../knex')
 
+
 // GET one user
 router.get('/:id', (req, res, next) => {
+  if (req.decodedJwt.user_id !== req.params.id) {
+    return next({ status: 401, message: 'Unauthorized' })
+  }
+
   knex('users')
     .select('id', 'email', 'phone', 'code', 'daily_method', 'daily_time')
     .where('id', req.params.id)
@@ -21,6 +26,10 @@ router.get('/:id', (req, res, next) => {
 
 // PATCH a user
 router.patch('/:id', (req, res, next) => {
+  if (req.decodedJwt.user_id !== req.params.id) {
+    return next({ status: 401, message: 'Unauthorized' })
+  }
+
   let {
     email,
     password,
@@ -82,6 +91,10 @@ router.patch('/:id', (req, res, next) => {
 
 // GET all notes for user
 router.get('/:id/notes', (req, res, next) => {
+  if (req.decodedJwt.user_id !== req.params.id) {
+    return next({ status: 401, message: 'Unauthorized' })
+  }
+
   knex('notes')
     .leftJoin('note_tags', 'notes.id', 'note_id')
     .innerJoin('tags', 'tags.id', 'tag_id')
