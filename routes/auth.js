@@ -17,6 +17,9 @@ router.post('/register', (req, res, next) => {
 
   // password validations - TODO
   bcrypt.hash(password, saltRounds, (err, hash) => {
+    if (err) {
+      return next(err)
+    }
     if (phone) {
       // remove anything that's not a digit from phone number and validate length
       phone = phone.replace(/\D/g, '')
@@ -64,7 +67,12 @@ router.post('/register', (req, res, next) => {
           .insert(newUser)
           .returning(['id', 'email', 'phone', 'code', 'daily_method', 'daily_time'])
           .then(user => {
-            res.json(user[0])
+            jwt.sign({ email }, process.env.JWT_SECRET, (jwtErr, signedJwt) => {
+              if (jwtErr) {
+                return next(jwtErr)
+              }
+              res.json(signedJwt)
+            })
           })
           .catch(err => {
             next(err)
@@ -85,13 +93,20 @@ router.post('/login', (req, res, next) => {
     .first()
     .then(user => {
       // validate password and send 401 if invalid - TODO
-      // check hash of pw against hashed_password
-      bcrypt.compare(password, user.hashed_password, (err, res) => {
-        if (res) {
-          // if good generate and send back jwt - TODO
+      bcrypt.compare(password, user.hashed_password, (err, match) => {
+        if (err) {
+          return next(err)
+        }
+        else if (match) {
+          jwt.sign({ email }, process.env.JWT_SECRET, (jwtErr, signedJwt) => {
+            if (jwtErr) {
+              return next(jwtErr)
+            }
+            res.json(signedJwt)
+          })
         }
         else {
-          next({ status: 401, message: 'Incorrect password'})
+          return next({ status: 401, message: 'Incorrect password' })
         }
       })
     })
