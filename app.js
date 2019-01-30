@@ -23,12 +23,12 @@ const authMiddleware = (req, res, next) => {
   if (header) {
     const bearer = header.split(' ')
     const token = bearer[1]
+    console.log(token)
 
     if (token) {
       jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
         // invalid JWT
         if (err) {
-          console.log(err)
           return next({ status: 401, message: 'Unauthorized' })
         }
         // valid JWT
