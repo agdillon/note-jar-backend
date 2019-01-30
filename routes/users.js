@@ -91,7 +91,8 @@ router.patch('/:id', (req, res, next) => {
 
 // GET all notes for user
 router.get('/:id/notes', (req, res, next) => {
-  if (req.decodedJwt.user_id !== req.params.id) {
+  if (req.decodedJwt.user_id.toString() !== req.params.id) {
+    console.log(`failing in verifying user`)
     return next({ status: 401, message: 'Unauthorized' })
   }
 
