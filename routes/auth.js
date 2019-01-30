@@ -48,6 +48,7 @@ router.post('/register', (req, res, next) => {
     // generate friend code
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
     const code = Array(7).join().split(',').map(() => alphabet.charAt(Math.floor(Math.random() * alphabet.length))).join('')
+    // need to redo this to avoid collisions - uuid or something? - TODO
 
     const newUser = {
       email,
