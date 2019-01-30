@@ -45,8 +45,9 @@ router.post('/register', (req, res, next) => {
 
     // validate daily_time - TODO
 
-    // generate friend code - TODO
-    const code = phone.slice(0, 7)
+    // generate friend code
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    const code = Array(7).join().split(',').map(() => alphabet.charAt(Math.floor(Math.random() * alphabet.length))).join('')
 
     const newUser = {
       email,
