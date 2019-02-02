@@ -75,7 +75,7 @@ router.post('/register', (req, res, next) => {
               if (jwtErr) {
                 return next(jwtErr)
               }
-              res.json({ signedJwt })
+              res.json({ jwt: signedJwt, user })
             })
           })
           .catch(err => {
@@ -110,7 +110,15 @@ router.post('/login', (req, res, next) => {
             if (jwtErr) {
               return next(jwtErr)
             }
-            res.json({ signedJwt })
+            const userToSend = {
+              id: user.id,
+              email: user.email,
+              phone: user.phone,
+              code: user.code,
+              daily_method: user.daily_method,
+              daily_time: user.daily_time
+            }
+            res.json({ jwt: signedJwt, user: userToSend })
           })
         }
         else {
