@@ -46,7 +46,7 @@ router.post('/register', (req, res, next) => {
     // validate daily_time - TODO
 
     // generate friend code
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz1234567890'
     const code = Array(7).join().split(',').map(() => alphabet.charAt(Math.floor(Math.random() * alphabet.length))).join('')
     // need to redo this to avoid collisions - uuid or something? - TODO
 
