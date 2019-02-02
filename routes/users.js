@@ -2,10 +2,9 @@ const express = require('express')
 const router = express.Router()
 const knex = require('../knex')
 
-
 // GET one user
 router.get('/:id', (req, res, next) => {
-  if (req.decodedJwt.user_id !== req.params.id) {
+  if (req.decodedJwt.user_id.toString() !== req.params.id) {
     return next({ status: 401, message: 'Unauthorized' })
   }
 
@@ -26,7 +25,7 @@ router.get('/:id', (req, res, next) => {
 
 // PATCH a user
 router.patch('/:id', (req, res, next) => {
-  if (req.decodedJwt.user_id !== req.params.id) {
+  if (req.decodedJwt.user_id.toString() !== req.params.id) {
     return next({ status: 401, message: 'Unauthorized' })
   }
 
