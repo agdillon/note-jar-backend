@@ -70,13 +70,12 @@ router.post('/register', (req, res, next) => {
         knex('users')
           .insert(newUser)
           .returning(['id', 'email', 'phone', 'code', 'daily_method', 'daily_time'])
-          .first()
           .then(user => {
-            jwt.sign({ user_id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' }, (jwtErr, signedJwt) => {
+            jwt.sign({ user_id: user[0].id }, process.env.JWT_SECRET, { expiresIn: '7d' }, (jwtErr, signedJwt) => {
               if (jwtErr) {
                 return next(jwtErr)
               }
-              res.json({ jwt: signedJwt, user })
+              res.json({ jwt: signedJwt, user: user[0] })
             })
           })
           .catch(err => {
