@@ -71,7 +71,7 @@ router.post('/register', (req, res, next) => {
           .insert(newUser)
           .returning(['id', 'email', 'phone', 'code', 'daily_method', 'daily_time'])
           .then(user => {
-            jwt.sign({ user_id: user.id }, process.env.JWT_SECRET, (jwtErr, signedJwt) => {
+            jwt.sign({ user_id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' }, (jwtErr, signedJwt) => {
               if (jwtErr) {
                 return next(jwtErr)
               }
@@ -106,7 +106,7 @@ router.post('/login', (req, res, next) => {
           return next(err)
         }
         else if (match) {
-          jwt.sign({ user_id: user.id }, process.env.JWT_SECRET, (jwtErr, signedJwt) => {
+          jwt.sign({ user_id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' }, (jwtErr, signedJwt) => {
             if (jwtErr) {
               return next(jwtErr)
             }
