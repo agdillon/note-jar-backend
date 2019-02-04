@@ -114,8 +114,10 @@ router.get('/:id/notes', (req, res, next) => {
     .groupBy('author', 'content', 'notes.created_at', 'notes.id', 'type', 'user_id')
     .then(notes => {
       if (notes.tag_name.includes(null)) {
+        console.log(notes.tag_name)
         notes.tag_name = []
       }
+      console.log(notes)
       res.json(notes)
     })
     .catch(err => {
