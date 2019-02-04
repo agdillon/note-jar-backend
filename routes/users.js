@@ -111,7 +111,7 @@ router.get('/:id/notes', (req, res, next) => {
     .leftJoin('tags', 'tags.id', 'tag_id')
     .select(['author', 'content', 'notes.created_at', 'notes.id', 'type', 'user_id', knex.raw('ARRAY_AGG(tag_name) as tag_name')])
     .where('user_id', req.params.id)
-    .groupBy('author', 'content', 'notes.created_at', 'note_id', 'type', 'user_id')
+    .groupBy('author', 'content', 'notes.created_at', 'notes.id', 'type', 'user_id')
     .then(notes => {
       if (notes.tag_name.includes(null)) {
         notes.tag_name = []
