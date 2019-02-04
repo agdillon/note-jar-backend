@@ -8,6 +8,10 @@ router.get('/:id', (req, res, next) => {
     return next({ status: 401, message: 'Unauthorized' })
   }
 
+  if (!req.params.id || req.params.id === 'null' || req.params.id === 'undefined') {
+    return next({ status: 400, message: 'Incorrect user ID' })
+  }
+
   knex('users')
     .select('id', 'email', 'phone', 'code', 'daily_method', 'daily_time')
     .where('id', req.params.id)
@@ -27,6 +31,10 @@ router.get('/:id', (req, res, next) => {
 router.patch('/:id', (req, res, next) => {
   if (req.decodedJwt.user_id.toString() !== req.params.id) {
     return next({ status: 401, message: 'Unauthorized' })
+  }
+
+  if (!req.params.id || req.params.id === 'null' || req.params.id === 'undefined') {
+    return next({ status: 400, message: 'Incorrect user ID' })
   }
 
   let {
@@ -92,6 +100,10 @@ router.patch('/:id', (req, res, next) => {
 router.get('/:id/notes', (req, res, next) => {
   if (req.decodedJwt.user_id.toString() !== req.params.id) {
     return next({ status: 401, message: 'Unauthorized' })
+  }
+
+  if (!req.params.id || req.params.id === 'null' || req.params.id === 'undefined') {
+    return next({ status: 400, message: 'Incorrect user ID' })
   }
 
   knex('notes')
