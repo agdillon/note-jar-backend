@@ -26,7 +26,7 @@ const authMiddleware = (req, res, next) => {
       jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
         // invalid JWT
         if (err) {
-          return next({ status: 401, message: 'Unauthorized' })
+          return next(err)
         }
         // valid JWT
         req.decodedJwt = payload
