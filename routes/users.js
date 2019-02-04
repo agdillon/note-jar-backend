@@ -121,6 +121,7 @@ router.get('/:id/notes', (req, res, next) => {
       res.json(notes)
     })
     .catch(err => {
+      console.log(err)
       next(err)
     })
 })
