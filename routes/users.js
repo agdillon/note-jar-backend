@@ -113,7 +113,7 @@ router.get('/:id/notes', (req, res, next) => {
     .where('user_id', req.params.id)
     .groupBy('author', 'content', 'notes.created_at', 'notes.id', 'type', 'user_id')
     .then(notes => {
-      if (notes.tag_name.includes(null)) {
+      if (!notes.tag_name || notes.tag_name.includes(null)) {
         console.log(notes.tag_name)
         notes.tag_name = []
       }
