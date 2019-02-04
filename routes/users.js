@@ -8,7 +8,7 @@ router.get('/:id', (req, res, next) => {
     return next({ status: 401, message: 'Unauthorized' })
   }
 
-  if (!req.params.id || req.params.id === 'null' || req.params.id === 'undefined') {
+  if (!parseInt(req.params.id)) {
     return next({ status: 400, message: 'Incorrect user ID' })
   }
 
@@ -33,7 +33,7 @@ router.patch('/:id', (req, res, next) => {
     return next({ status: 401, message: 'Unauthorized' })
   }
 
-  if (!req.params.id || req.params.id === 'null' || req.params.id === 'undefined') {
+  if (!parseInt(req.params.id)) {
     return next({ status: 400, message: 'Incorrect user ID' })
   }
 
@@ -102,7 +102,7 @@ router.get('/:id/notes', (req, res, next) => {
     return next({ status: 401, message: 'Unauthorized' })
   }
 
-  if (!req.params.id || req.params.id === 'null' || req.params.id === 'undefined') {
+  if (!parseInt(req.params.id)) {
     return next({ status: 400, message: 'Incorrect user ID' })
   }
 

@@ -4,7 +4,7 @@ const knex = require('../knex')
 
 // GET one note
 router.get('/:id', (req, res, next) => {
-  if (!req.params.id || req.params.id === 'null' || req.params.id === 'undefined') {
+  if (!parseInt(req.params.id)) {
     return next({ status: 400, message: 'Incorrect note ID' })
   }
 
@@ -152,7 +152,7 @@ router.post('/', (req, res, next) => {
 
 // PATCH a note
 router.patch('/:id', (req, res, next) => {
-  if (!req.params.id || req.params.id === 'null' || req.params.id === 'undefined') {
+  if (!parseInt(req.params.id)) {
     return next({ status: 400, message: 'Incorrect note ID' })
   }
   // TODO
@@ -161,7 +161,7 @@ router.patch('/:id', (req, res, next) => {
 
 // DELETE a note
 router.delete('/:id', (req, res, next) => {
-  if (!req.params.id || req.params.id === 'null' || req.params.id === 'undefined') {
+  if (!parseInt(req.params.id)) {
     return next({ status: 400, message: 'Incorrect note ID' })
   }
 
