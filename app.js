@@ -21,7 +21,7 @@ const authMiddleware = (req, res, next) => {
   // don't do the normal jwt checking
   // req.baseUrl or req.url or req.originalUrl?
   if (req.baseUrl === '/notes' && req.method === 'POST' && req.body.hasOwnProperty('code')) {
-    next()
+    return next()
   }
 
   const header = req.header('Authorization')
@@ -37,7 +37,7 @@ const authMiddleware = (req, res, next) => {
         }
         // valid JWT
         req.decodedJwt = payload
-        next()
+        return next()
       })
     }
   }
