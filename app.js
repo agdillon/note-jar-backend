@@ -17,6 +17,13 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 
 const authMiddleware = (req, res, next) => {
+  // if route is POST /notes and friend code is present,
+  // don't do the normal jwt checking
+  // req.baseUrl or req.url or req.originalUrl?
+  if (req.baseUrl === '/notes' && req.method === 'POST' && req.body.hasOwnProperty('code')) {
+    next()
+  }
+
   const header = req.header('Authorization')
   if (header) {
     const bearer = header.split(' ')
